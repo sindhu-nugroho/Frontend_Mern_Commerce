@@ -4,12 +4,12 @@ import { Layout, Button } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import Sidebar from "./components/sidebar";
 import Dashboard from "./pages/dashboard/Dashboard";
-import Login from "./pages/dashboard/Login";
+import Login from "./pages/Login";
 import Product from "./pages/dashboard/Product";
 import AddProduct from "./pages/dashboard/ProductCreate";
 import Checkout from "./pages/Checkout";
 import Home from "./pages/Home";
-import UpdateProduct from "./pages/dashboard/ProductUpdate";
+import UpdateProduct from "./pages/dashboard/ProductUpdate2";
 
 const { Header, Content } = Layout;
 
