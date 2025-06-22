@@ -1,35 +1,80 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";  
+import { Layout, Button } from "antd";
+import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
+import Sidebar from "./components/sidebar";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Login from "./pages/dashboard/Login";
+import Product from "./pages/dashboard/Product";
+import AddProduct from "./pages/dashboard/ProductCreate";
+import Checkout from "./pages/Checkout";
+import Home from "./pages/Home";
+import UpdateProduct from "./pages/dashboard/ProductUpdate";
+
+const { Header, Content } = Layout;
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [collapsed, setCollapsed] = useState(false);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    const toggleCollapsed = () => {
+        setCollapsed(!collapsed);
+    };
 
-export default App
+    return (
+      <Router>
+        <Routes>
+          { /*Public Routes*/ }
+          <Route path='/' element={<Home />}/>
+          <Route path='checkout/:id'/>
+          <Route path='/signin' />
+
+          { /* Protected Route - Dashboard */ }
+          <Route
+            path='/dashboard/*'
+            element={
+              <Layout style={{ minHeight: "100vh" }}>
+                { /* Sidebar */}
+                <Sidebar collapsed={collapsed} />
+
+                { /* Main Content */ }
+                <Layout>
+                  <Header
+                    style={{
+                      padding: 0,
+                      background: "#fff",
+                      display: "flex",
+                      boxShadow: "0 2px 8px #f0f1f2",
+                    }}> 
+                    <Button
+                      type="text"
+                      icon={
+                        collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />
+                      } 
+                      onClick={toggleSidebar}
+                      style={{ fontSize: "16px", marginLeft: "16px" }}
+                    />
+                  </Header>
+                    <Content style={{
+                      margin: "16px", 
+                      padding: '16px',
+                      background: "#fff",
+                      minHeight: "280px",
+                    }}>
+                      <Routes>
+                        <Route path='/' element={<Dashboard />} />
+                        <Route path='products' element={<Product />} />
+                        <Route path='products/add' element={<AddProduct />} />
+                        <Route path='/products/create' element={<AddProduct />} />
+                        <Route path='/products/:id' element={<UpdateProduct />} />
+                      </Routes>
+                  </Content>
+                </Layout>
+              </Layout>
+            }
+          />
+        </Routes>
+      </Router>
+    );
+};
+
+export default App;
