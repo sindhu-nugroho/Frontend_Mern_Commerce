@@ -2,7 +2,7 @@ import React, { use, useEffect, useState } from 'react';
 import { Form, Input, Button, Upload, message, Select } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { URL_PRODUCT } from '../../utils/Endpoint';
+import { URL_PRODUCTS } from '../../utils/Endpoint';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const { Option } = Select;

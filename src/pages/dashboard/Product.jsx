@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Image } from "antd";
 import axios from "axios";
-import {URL_PRODUCT} from "../../utils/Endpoint";
+import {URL_PRODUCTS} from "../../utils/Endpoint";
 import { data, Link } from "react-router-dom";
 import { use } from "react";
 
@@ -12,7 +12,7 @@ const Product = () => {
     useEffect(() => {
         setLoading(true);
         axios
-            .get(URL_PRODUCT)
+            .get(URL_PRODUCTS)
             .then((res) => {
                 console.log("res", res.data);
                 setProducts(res.data);
@@ -82,3 +82,5 @@ const Product = () => {
         </div>
     )
 }
+
+export default Product;
