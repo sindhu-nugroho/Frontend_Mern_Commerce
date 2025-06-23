@@ -16,7 +16,7 @@ import {
     HomeOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
-import { URL_PRODUCTS, URL_TRANSACTIONS } from "../utils/Endpoints";
+import { URL_PRODUCTS, URL_TRANSACTIONS } from "../utils/Endpoint";
 import { useNavigate, useParams, Link } from "react-router-dom";
 
 const { Option } = Select;

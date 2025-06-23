@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, Col, Row, Button, Typography, message } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { URL_PRODUCTS } from "../utils/Endpoints";
+import { URL_PRODUCTS } from "../utils/Endpoint";
 import { Link } from "react-router-dom";
 
 const { Title } = Typography;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Image } from "antd";
 import axios from "axios";
-import {URL_PRODUCT} from "../../utiles/Endpoint";
+import {URL_PRODUCT} from "../../utils/Endpoint";
 import { data, Link } from "react-router-dom";
 import { use } from "react";
 
