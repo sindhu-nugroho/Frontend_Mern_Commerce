@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Input, Button, Form, Alert } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { URL_SIGIN } from '../utils/Endpoint';
+import { URL_SIGNIN } from '../utils/Endpoint';
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
@@ -20,7 +20,7 @@ function Login() {
         };
 
         axios
-            .post(URL_SIGIN, data)
+            .post(URL_SIGNIN, data)
             .then((res) => {
                 console.log('res', res);
                 if (res.data.role !== 'Admin') {
