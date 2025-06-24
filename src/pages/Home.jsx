@@ -33,7 +33,7 @@ const Home = () => {
         <div style={{ padding: '20px'}}>
             <Title level={2}>Produk List</Title>
             <Row gutter={[16, 16]}>
-                {product.map((product) => (
+                {products.map((product) => (
                     <Col span={8} key={product.id}>
                         <Card
                             hoverable

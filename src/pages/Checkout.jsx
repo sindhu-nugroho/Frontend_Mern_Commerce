@@ -74,7 +74,7 @@ const Checkout = () => {
                     <Col span={18}>
                         <Card
                             title="Product Details"
-                            bordered={false}
+                            variant={false}
                             style={{ width: "100%" }}
                             extra={<ShoppingCartOutlined />}>
                             <p>
