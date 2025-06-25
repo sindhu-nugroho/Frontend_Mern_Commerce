@@ -15,7 +15,7 @@ function Login() {
     const handleSubmit = (values) => {
         setLoading(true);
         const data = {
-            email: values.email,
+            email: values.email.trim().toLowerCase(),
             password: values.password,
         };
 
@@ -61,7 +61,7 @@ function Login() {
                                 prefix={<UserOutlined />}
                                 placeholder='email'
                                 size='large'
-                                autoComplete='off'
+                                // autoComplete='off'
                             />
                         </Form.Item>
 
@@ -73,7 +73,7 @@ function Login() {
                                 prefix={<LockOutlined />}
                                 placeholder='password'
                                 size='large'
-                                autoComplete='off'
+                                // autoComplete='off'
                             />
                         </Form.Item>
 
