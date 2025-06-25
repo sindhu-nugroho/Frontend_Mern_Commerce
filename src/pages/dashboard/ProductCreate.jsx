@@ -22,7 +22,7 @@ const AddProduct = () => {
         data.append("thumbnail", fileList[0]?.originFileObj);
 
         try{
-            await axios.post(URL_PRODUCT, data,);
+            await axios.post(URL_PRODUCTS, data,);
             message.success("Product created successfully");
             form.resetFields();
             setFileList([]);
