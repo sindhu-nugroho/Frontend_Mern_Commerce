@@ -56,7 +56,10 @@ const UpdateProduct = () => {
         data.append('price', values.price);
 
         // tambahkan data baru bila diunggah
-        if (values.thumbnail !== undefined && values.thumbnail[0] !== undefined) {
+        if (
+            fileList.length > 0 &&
+            fileList[0].originFileObj // hanya ada jika user memilih file baru
+        ) {
             data.append('thumbnail', fileList[0].originFileObj);
         }
 
@@ -109,16 +112,17 @@ const UpdateProduct = () => {
                         <p>
                             Current:{ ' ' }
                             {product?.thumbnail ? (
-                                <a href="{product.thumbnail}">{product.thumbnail}</a>
-                            ) : (
+                            <a href={product.thumbnail} target="_blank" rel="noopener noreferrer">{product.thumbnail}</a>                            
+                        ) : (
                                 'No thumbnail uploaded'
                             )}
                         </p>
                         <Upload
-                            action='/upload'
+                            beforeUpload={() => false}
                             listType='picture'
                             valuePropName='fileList'
-                            getValueFromEvent={({ fileList }) => fileList}
+                            fileList={fileList}
+                            onChange={handleChange}
                             rules={[{ required: false, }]}
                             maxCount={1}>
                                 <Button icon={<UploadOutlined />}>Upload Thumbnail</Button>
