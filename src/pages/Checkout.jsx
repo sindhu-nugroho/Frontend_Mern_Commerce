@@ -94,7 +94,7 @@ const Checkout = () => {
                     <Col span={6}>
                         <Card
                             title="Shipping & Payment"
-                            bordered={false}
+                            variant={false}
                             style={{ width: "100%" }}
                             extra={<CreditCardOutlined />}>
                                 <Form
