@@ -61,7 +61,6 @@ function Login() {
                                 prefix={<UserOutlined />}
                                 placeholder='email'
                                 size='large'
-                                // autoComplete='off'
                             />
                         </Form.Item>
 
@@ -73,7 +72,6 @@ function Login() {
                                 prefix={<LockOutlined />}
                                 placeholder='password'
                                 size='large'
-                                // autoComplete='off'
                             />
                         </Form.Item>
 
