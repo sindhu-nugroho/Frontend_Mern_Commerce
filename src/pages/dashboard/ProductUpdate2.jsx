@@ -18,7 +18,7 @@ const UpdateProduct = () => {
 
     useEffect(() => {
         axios
-            .get(`${URL_PRODUCT}/${id}`)
+            .get(`${URL_PRODUCTS}/${id}`)
             .then((res) => {
                 console.log(res);
                 setProduct(res.data);
