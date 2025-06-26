@@ -56,12 +56,12 @@ const UpdateProduct = () => {
         data.append('price', values.price);
 
         // tambahkan data baru bila diunggah
-        if (values.thumbnail !== undefined || values.thumbnail[0] !== undefined) {
+        if (values.thumbnail !== undefined && values.thumbnail[0] !== undefined) {
             data.append('thumbnail', fileList[0].originFileObj);
         }
 
         try {
-            await axios.put(`${URL_PRODUCT}/${id}`, data);
+            await axios.patch(`${URL_PRODUCTS}/${id}`, data);
             message.success('Product added successfully');
             form.resetFields();
             setFileList([]);
@@ -72,7 +72,7 @@ const UpdateProduct = () => {
             setLoading(false);
         }
     };
-    
+
     // fungsi untuk mengatur perubahan file
     const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
 
