@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Card, Col, Row, Button, Typography, message } from "antd";
-import { ShoppingCartOutlined } from "@ant-design/icons";
+import { message } from "antd";
+import { ShoppingCartOutlined, DashboardOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { URL_PRODUCTS } from "../utils/Endpoint";
 import { Link } from "react-router-dom";
-
-const { Title } = Typography;
 
 const Home = () => {
     const [products, setProducts] = useState([]);
@@ -16,7 +14,7 @@ const Home = () => {
             .get(URL_PRODUCTS)
             .then((res) => {
                 console.log("res", res.data);
-                setProducts(res.data); // simpan data ke state
+                setProducts(res.data);
             })
             .catch((err) => {
                 console.log(err)
@@ -24,56 +22,100 @@ const Home = () => {
             })
     }, [])
 
-    //untuk menghandle klik "add to cart"
-    const handleAddToCart = (product) => {
-        message.success('Produk ditambahkan ke keranjang: ' + product.name);
-    }
-
     return (
-        <div style={{ padding: '20px'}}>
-            <Title level={2}>Produk List</Title>
-            {products.length === 0 ? (
-                <div style={{ 
-                    textAlign: 'center', 
-                    marginTop: 60, 
-                    color: '#888' 
-                }}>
-                    <img 
-                        src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" 
-                        alt="No Product" 
-                        width={120} 
-                        style={{ opacity: 0.5, marginBottom: 20 }}
-                    />
-                    <div style={{ fontSize: 22, fontWeight: 500, marginBottom: 8 }}>
-                        Tidak ada produk yang tersedia
-                    </div>
-                    <div style={{ fontSize: 16 }}>
-                        Silakan kembali lagi nanti atau hubungi admin untuk info lebih lanjut.
+        <div className="min-h-screen bg-gray-50 flex flex-col">
+            {/* Header */}
+            <div className="bg-gray-900 shadow-sm border-b">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between items-center py-4">
+                        <h1 className="text-3xl font-bold text-white">
+                            Commerce Store
+                        </h1>
+                        <Link 
+                            to="/dashboard" 
+                            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
+                        >
+                            <DashboardOutlined className="mr-2" />
+                            Dashboard
+                        </Link>
                     </div>
                 </div>
-            ) : (
-                <Row gutter={[16, 16]}>
-                    {products.map((product) => (
-                        <Col span={8} key={product.id}>
-                            <Card
-                                hoverable
-                                cover={<img alt={product.name} src={product.thumbnail} />}>                  
-                                    <Card.Meta
-                                        title={product.name}
-                                        description={`Rp ${product.price}`} 
-                                    />  
-                                    <Button
-                                        type="primary"
-                                        icon={<ShoppingCartOutlined />}
-                                        style={{ marginTop: '10px' }}
-                                    >
-                                        <Link to={`/checkout/${product._id}`}>CHeckout Now</Link>
-                                    </Button>     
-                            </Card>
-                        </Col>
-                    ))}
-                </Row>
-            )}
+            </div>
+
+            {/* Main Content - flex-grow untuk mengisi ruang kosong */}
+            <div className="flex-grow">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                            Produk Terbaru
+                        </h2>
+                        <p className="text-gray-600">
+                            Temukan produk berkualitas dengan harga terbaik
+                        </p>
+                    </div>
+
+                    {products.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-20">
+                            <div className="w-32 h-32 mb-6 opacity-50">
+                                <img 
+                                    src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" 
+                                    alt="No Product" 
+                                    className="w-full h-full object-contain"
+                                />
+                            </div>
+                            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                                Tidak ada produk yang tersedia
+                            </h3>
+                            <p className="text-gray-600 text-center max-w-md">
+                                Silakan kembali lagi nanti atau hubungi admin untuk info lebih lanjut.
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {products.map((product) => (
+                                <div key={product._id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+                                    <div className="aspect-w-16 aspect-h-12 overflow-hidden">
+                                        <img 
+                                            src={product.thumbnail} 
+                                            alt={product.name}
+                                            className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
+                                        />
+                                    </div>
+                                    
+                                    <div className="p-4">
+                                        <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2">
+                                            {product.name}
+                                        </h3>
+                                        
+                                        <div className="flex items-center justify-between mb-4">
+                                            <span className="text-2xl font-bold text-blue-600">
+                                                Rp {product.price?.toLocaleString('id-ID') || '0'}
+                                            </span>
+                                        </div>
+
+                                        <Link 
+                                            to={`/checkout/${product._id}`}
+                                            className="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-105"
+                                        >
+                                            <ShoppingCartOutlined className="mr-2" />
+                                            Checkout Sekarang
+                                        </Link>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Footer - akan selalu berada di bawah */}
+            <footer className="bg-gray-900 text-white py-6 mt-auto">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <p className="text-gray-400 text-sm">
+                        © 2025 EduCommerce Store. All rights reserved.
+                    </p>
+                </div>
+            </footer>
         </div>
     );
 };
