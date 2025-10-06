@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { Input, Button, Form, Alert } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
 
 function Login() {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
-    const navigate = useNavigate();
 
     const DUMMY_ADMIN = {
         email: 'edumin@educourse.id',
@@ -26,7 +24,7 @@ function Login() {
             if (email === DUMMY_ADMIN.email && password === DUMMY_ADMIN.password) {
                 localStorage.setItem('auth_role', DUMMY_ADMIN.role);
                 localStorage.setItem('auth_email', DUMMY_ADMIN.email);
-                navigate('/dashboard');
+                alert('Login berhasil');
             } else if (email === DUMMY_ADMIN.email) {
                 setErrMsg('Password salah');
             } else {
