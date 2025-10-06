@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 const Home = () => {
     const [products, setProducts] = useState([]);
 
-    // fetch data saat halaman keload
     useEffect(() => {
         axios
             .get(URL_PRODUCTS)
@@ -42,7 +41,7 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Main Content - flex-grow untuk mengisi ruang kosong */}
+            {/* Main Content */}
             <div className="flex-grow">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="mb-8">
@@ -108,7 +107,7 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Footer - akan selalu berada di bawah */}
+            {/* Footer */}
             <footer className="bg-gray-900 text-white py-6 mt-auto">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <p className="text-gray-400 text-sm">
