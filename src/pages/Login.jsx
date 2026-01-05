@@ -37,14 +37,14 @@ function Login() {
     return (
         <>
             {errMsg !== "" && (
-                <div style={{ padding: '20px' }}>
+                <div className="px-4 sm:px-0" style={{ paddingTop: 20 }}>
                     <Alert message={errMsg} type='error' />
                 </div>
             )}
 
-            <div className='flex items-center justify-center min-h-screen bg-gray-100'>
-                <div className='bg-white p-8 rounded-lg shadow-md w-full max-w-md'>
-                    <h2 className='text-2xl font-bold mb-6 text-center'>Login</h2>
+            <div className='flex items-center justify-center min-h-screen bg-gray-100 px-4'>
+                <div className='bg-white p-6 sm:p-8 md:p-10 rounded-lg shadow-md w-full max-w-sm sm:max-w-md'>
+                    <h2 className='text-xl sm:text-2xl md:text-3xl font-bold mb-6 text-center'>Login</h2>
                     <Form
                         form={form}
                         onFinish={handleSubmit}
@@ -60,6 +60,7 @@ function Login() {
                                 prefix={<UserOutlined />}
                                 placeholder='email'
                                 size='large'
+                                className='rounded-md'
                             />
                         </Form.Item>
 
@@ -72,6 +73,7 @@ function Login() {
                                 prefix={<LockOutlined />}
                                 placeholder='password'
                                 size='large'
+                                className='rounded-md'
                             />
                         </Form.Item>
 
@@ -82,12 +84,13 @@ function Login() {
                                 block
                                 loading={loading}
                                 size='large'
+                                className='text-sm sm:text-base'
                             >
                                 Login
                             </Button>
                         </Form.Item>
 
-                        <div className='text-sm text-gray-500 text-center'>
+                        <div className='text-xs sm:text-sm text-gray-500 text-center truncate'>
                             Gunakan: edumin@educourse.id / edumin123
                         </div>
                     </Form>

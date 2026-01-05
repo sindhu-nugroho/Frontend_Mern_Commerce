@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
     Card,
     Button,
@@ -10,49 +10,36 @@ import {
     Alert
 } from "antd";
 import { ShoppingCartOutlined, CreditCardOutlined } from "@ant-design/icons";
-import { useParams } from "react-router-dom";
-
-const DUMMY_PRODUCTS = [
-    { _id: "1", name: "Semen Gresik", price: 50000 },
-    { _id: "2", name: "Semen Tiga Roda", price: 250000 },
-    { _id: "3", name: "Semen Grobogan", price: 300000 },
-    { _id: "4", name: "Semen Padang", price: 180000 },
-];  
 
 const Checkout = () => {
     const [loading, setLoading] = useState(false);
-    const [product, setProduct] = useState(null);
     const [successInfo, setSuccessInfo] = useState(null);
     const [form] = Form.useForm();
-    const { id } = useParams();
 
-    useEffect(() => {
-        const found = DUMMY_PRODUCTS.find(p => p._id === id) || DUMMY_PRODUCTS[0];
-        setProduct(found);
-    }, [id]);
+    // DUMMY PRODUCT
+    const PRODUCT = { name: "Semen Gresik", price: 50000 };
 
     const handleCheckout = (values) => {
-        if (!product) return;
         setLoading(true);
         setSuccessInfo(null);
 
         setTimeout(() => {
             setSuccessInfo({
                 name: values.first_name,
-                product: product.name,
-                total: product.price
+                product: PRODUCT.name,
+                total: PRODUCT.price
             });
             form.resetFields();
             setLoading(false);
-        }, 1000);
+        }, 900);
     };
 
     return (
-        <div style={{ padding: "20px" }}>
-            <h1>Checkout</h1>
+        <div className="p-4 sm:p-6 md:p-8">
+            <h1 className="text-xl sm:text-2xl font-semibold mb-4">Checkout</h1>
 
             {successInfo && (
-                <div style={{ marginBottom: 20 }}>
+                <div className="mb-4 sm:mb-6 px-0 sm:px-0">
                     <Alert
                         type="success"
                         message="Checkout berhasil"
@@ -68,20 +55,20 @@ const Checkout = () => {
                 </div>
             )}
 
-            <Row gutter={16}>
-                <Col span={18}>
+            <Row gutter={[16, 16]}>
+                <Col xs={24} md={16}>
                     <Card
                         title="Product Details"
                         style={{ width: "100%" }}
                         extra={<ShoppingCartOutlined />}>
-                        <p><strong>Product Name:</strong> {product?.name}</p>
-                        <p><strong>Price:</strong> Rp {product?.price?.toLocaleString('id-ID')}</p>
+                        <p><strong>Product Name:</strong> {PRODUCT.name}</p>
+                        <p><strong>Price:</strong> Rp {PRODUCT.price.toLocaleString('id-ID')}</p>
                         <Divider />
-                        <p><strong>Total Amount:</strong> Rp {product?.price?.toLocaleString('id-ID')}</p>
+                        <p><strong>Total Amount:</strong> Rp {PRODUCT.price.toLocaleString('id-ID')}</p>
                     </Card>
                 </Col>
 
-                <Col span={6}>
+                <Col xs={24} md={8}>
                     <Card
                         title="Shipping & Payment"
                         style={{ width: "100%" }}
@@ -93,7 +80,7 @@ const Checkout = () => {
                             <Form.Item
                                 name="first_name"
                                 label="Your Name"
-                                rules={[{ required: true, message: "Please enter your name" }]}>
+                                rules={[{ required: true, message: "Please enter your name" }]} >
                                 <Input placeholder="Enter your name" />
                             </Form.Item>
 
@@ -102,8 +89,8 @@ const Checkout = () => {
                                     type="primary"
                                     htmlType='submit'
                                     block
-                                    loading={loading}
-                                    disabled={!product}>
+                                    size="large"
+                                    loading={loading}>
                                     Complete Checkout
                                 </Button>
                             </Form.Item>
@@ -116,7 +103,6 @@ const Checkout = () => {
 };
 
 export default Checkout;
-
 
 // ***********************************************KODE ASLI**********************************************************
 // import React, { useEffect, useState } from "react";
