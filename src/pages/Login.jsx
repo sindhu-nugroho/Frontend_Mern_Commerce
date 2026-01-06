@@ -1,38 +1,44 @@
 import React, { useState } from 'react';
 import { Input, Button, Form, Alert } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import axios from 'axios';
+import { URL_SIGNIN } from '../utils/Endpoint';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
 
-    const DUMMY_ADMIN = {
-        email: 'edumin@educourse.id',
-        password: 'edumin123',
-        role: 'Admin'
-    };
+    const navigate = useNavigate();
 
     const handleSubmit = (values) => {
         setErrMsg('');
         setLoading(true);
+        const data = {
+            email: values.email.trim().toLowerCase(),
+            password: values.password,
+        };
 
-        const email = values.email.trim().toLowerCase();
-        const password = values.password;
-
-        setTimeout(() => {
-            if (email === DUMMY_ADMIN.email && password === DUMMY_ADMIN.password) {
-                localStorage.setItem('auth_role', DUMMY_ADMIN.role);
-                localStorage.setItem('auth_email', DUMMY_ADMIN.email);
-                alert('Login berhasil');
-            } else if (email === DUMMY_ADMIN.email) {
-                setErrMsg('Password salah');
-            } else {
-                setErrMsg('Akun tidak ditemukan');
-            }
-            setLoading(false);
-        }, 900);
+        axios
+            .post(URL_SIGNIN, data)
+            .then((res) => {
+                const role = res?.data?.role;
+                if (role !== 'Admin') {
+                    setErrMsg('Hanya admin yang dapat mengakses halaman ini');
+                } else {
+                    navigate('/dashboard');
+                }
+            })
+            .catch((err) => {
+                const message = err?.response?.data?.message || err?.message || 'Login gagal';
+                setErrMsg(message);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
+
 
     return (
         <>
@@ -54,7 +60,10 @@ function Login() {
                         <Form.Item
                             label='Email'
                             name='email'
-                            rules={[{ required: true, message: 'Please input your email!' }]}
+                            rules={[
+                                { required: true, message: 'Please input your email!' },
+                                { type: 'email', message: 'Please enter a valid email!' },
+                            ]}
                         >
                             <Input
                                 prefix={<UserOutlined />}
@@ -89,10 +98,6 @@ function Login() {
                                 Login
                             </Button>
                         </Form.Item>
-
-                        <div className='text-xs sm:text-sm text-gray-500 text-center truncate'>
-                            Gunakan: edumin@educourse.id / edumin123
-                        </div>
                     </Form>
                 </div>
             </div>
