@@ -1,49 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Button, Image, Popconfirm, message } from "antd";
-
-const INITIAL_PRODUCTS = [
-  {
-      _id: "1",
-      name: "Barbatos Lupus Rex 1/100 Model Kit",
-      price: 1500000,
-      thumbnail: "https://tamashiiweb.com/images/item/item_0000014284_Ti1gOkD5_05.jpg"
-  },
-  {
-      _id: "2",
-      name: "Semen Gresik 50kg",
-      price: 250000,
-      thumbnail: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm-XS_koiBivYQ8kcU7w7MThMnQvINvtml3g&s"
-  },
-  {
-      _id: "3",
-      name: "HSR Velg",
-      price: 300000,
-      thumbnail: "https://hsrwheel.com/lama/wp-content/uploads/2022/04/HSR-RAI-S2.webp"
-  },
-  {
-      _id: "4",
-      name: "Mili Mini Album Hue",
-      price: 180000,
-      thumbnail: "https://images.squarespace-cdn.com/content/v1/52143a7ae4b0f9bd8308dc73/1490880415032-XLH2RGJBN0JO8ZA411FS/image-asset.png?format=1500w"
-  }
-];
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { URL_PRODUCTS } from "../../utils/Endpoint";
 
 const Product = () => {
-  const [products, setProducts] = useState(INITIAL_PRODUCTS);
-  const [loading] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleAdd = () => {
-    message.info("Tombol ini nantinya akan digunakan untuk menambahkan sebuah produk baru");
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${URL_PRODUCTS}/${id}`);
+      message.success("Produk berhasil dihapus!");
+      setProducts((prev) => prev.filter((item) => item._id !== id));
+    } catch (err) {
+      message.error("Gagal menghapus produk");
+    }
   };
 
-  const handleDelete = (id) => {
-    setProducts((prev) => prev.filter((p) => p._id !== id));
-    message.success("Produk berhasil dihapus! (dummy)");
-  };
-
-  const handleUpdate = (record) => {
-    message.info(`Fitur update dummy untuk: ${record.name}`);
-  };
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get(URL_PRODUCTS)
+      .then((res) => {
+        setProducts(Array.isArray(res.data) ? res.data : []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err?.response || err);
+        message.error("Gagal mengambil data produk dari server");
+        setLoading(false);
+      });
+  }, []);
 
   const columns = [
     {
@@ -75,8 +63,18 @@ const Product = () => {
       dataIndex: "price",
       key: "price",
       width: 120,
-      render: (p) => <span className="text-blue-600 font-semibold
-      whitespace-nowrap">Rp {p.toLocaleString("id-ID")}</span>,
+      render: (p) => {
+        const priceNumber = Number(p);
+        const displayPrice = Number.isFinite(priceNumber)
+          ? priceNumber.toLocaleString("id-ID")
+          : "0";
+
+        return (
+          <span className="text-blue-600 font-semibold whitespace-nowrap">
+            Rp {displayPrice}
+          </span>
+        );
+      },
     },
     {
       title: "Options",
@@ -84,8 +82,8 @@ const Product = () => {
       width: 140,
       render: (_, record) => (
         <div className="flex gap-1 flex-wrap">
-          <Button size="small" onClick={() => handleUpdate(record)}>
-            Edit
+          <Button size="small">
+            <Link to={`/dashboard/updateproduct/${record?._id}`}>Edit</Link>
           </Button>
           <Popconfirm
             title="Hapus produk ini?"
@@ -107,9 +105,11 @@ const Product = () => {
       <div className="flex-shrink-0 bg-white px-4 py-3 sm:px-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <h1 className="text-lg sm:text-xl font-bold text-gray-800">List Product</h1>
-          <Button type="primary" onClick={handleAdd} size="middle">
-            + Tambah Produk
-          </Button>
+          <Link to="/dashboard/addproduct">
+            <Button type="primary" size="middle">
+              + Tambah Produk
+            </Button>
+          </Link>
         </div>
       </div>
 

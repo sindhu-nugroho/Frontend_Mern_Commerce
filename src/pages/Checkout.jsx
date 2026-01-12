@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Card,
     Button,
@@ -7,31 +7,94 @@ import {
     Col,
     Row,
     Divider,
-    Alert
+    Alert,
+    message
 } from "antd";
 import { ShoppingCartOutlined, CreditCardOutlined } from "@ant-design/icons";
+import axios from "axios";
+import { URL_PRODUCTS, URL_TRANSACTIONS } from "../utils/Endpoint";
+import { useParams } from "react-router-dom";
 
 const Checkout = () => {
     const [loading, setLoading] = useState(false);
+    const [loadingProduct, setLoadingProduct] = useState(false);
     const [successInfo, setSuccessInfo] = useState(null);
+    const [product, setProduct] = useState(null);
     const [form] = Form.useForm();
 
-    // DUMMY PRODUCT
-    const PRODUCT = { name: "Semen Gresik", price: 50000 };
+    const params = useParams();
+    const { id } = params;
+
+    useEffect(() => {
+        if (!id) {
+            setProduct(null);
+            return;
+        }
+
+        let isActive = true;
+        setLoadingProduct(true);
+
+        axios
+            .get(`${URL_PRODUCTS}/${id}`)
+            .then((res) => {
+                if (!isActive) return;
+                setProduct(res?.data || null);
+            })
+            .catch((err) => {
+                if (!isActive) return;
+                console.error(err);
+                message.error("Gagal mengambil detail produk");
+                setProduct(null);
+            })
+            .finally(() => {
+                if (!isActive) return;
+                setLoadingProduct(false);
+            });
+
+        return () => {
+            isActive = false;
+        };
+    }, [id]);
 
     const handleCheckout = (values) => {
+        if (!product?._id) {
+            message.error("Produk tidak ditemukan");
+            return;
+        }
+
         setLoading(true);
         setSuccessInfo(null);
 
-        setTimeout(() => {
-            setSuccessInfo({
-                name: values.first_name,
-                product: PRODUCT.name,
-                total: PRODUCT.price
+        const data = {
+            first_name: values.first_name,
+            amount: product.price,
+            product_id: product._id,
+        };
+
+        axios
+            .post(URL_TRANSACTIONS, data)
+            .then((res) => {
+                const redirectUrl = res?.data?.midtrans_url;
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                    return;
+                }
+
+                setSuccessInfo({
+                    name: values.first_name,
+                    product: product.name,
+                    total: product.price,
+                });
+                form.resetFields();
+            })
+            .catch((err) => {
+                console.error(err);
+                const msg = err?.response?.data?.message || err?.message || "Checkout gagal";
+                message.error(msg);
+            })
+            .finally(() => {
+                setLoading(false);
             });
-            form.resetFields();
-            setLoading(false);
-        }, 900);
     };
 
     return (
@@ -61,10 +124,10 @@ const Checkout = () => {
                         title="Product Details"
                         style={{ width: "100%" }}
                         extra={<ShoppingCartOutlined />}>
-                        <p><strong>Product Name:</strong> {PRODUCT.name}</p>
-                        <p><strong>Price:</strong> Rp {PRODUCT.price.toLocaleString('id-ID')}</p>
+                        <p><strong>Product Name:</strong> {loadingProduct ? "Loading..." : (product?.name || "-")}</p>
+                        <p><strong>Price:</strong> Rp {(product?.price ?? 0).toLocaleString('id-ID')}</p>
                         <Divider />
-                        <p><strong>Total Amount:</strong> Rp {PRODUCT.price.toLocaleString('id-ID')}</p>
+                        <p><strong>Total Amount:</strong> Rp {(product?.price ?? 0).toLocaleString('id-ID')}</p>
                     </Card>
                 </Col>
 

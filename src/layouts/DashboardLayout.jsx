@@ -8,8 +8,7 @@ const { Header, Content } = Layout;
 
 const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
-
-  const toggleCollapsed = () => setCollapsed((v) => !v);
+  const toggleCollapsed = () => setCollapsed((e) => !e);
 
   const headerButtonIcon = useMemo(
     () => (collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />),
@@ -19,7 +18,6 @@ const DashboardLayout = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sidebar collapsed={collapsed} onCollapse={setCollapsed} />
-
       <Layout style={{ minHeight: "100vh" }}>
         <Header
           style={{
@@ -27,7 +25,6 @@ const DashboardLayout = () => {
             background: "#fff",
             display: "flex",
             alignItems: "center",
-            borderBottom: "1px solid #f0f0f0",
           }}
         >
           <Button
@@ -38,8 +35,6 @@ const DashboardLayout = () => {
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           />
         </Header>
-
-        {/* Let each dashboard page control its own internal scrolling */}
         <Content style={{ overflow: "hidden", background: "#f5f5f5" }}>
           <div style={{ height: "100%" }}>
             <Outlet />

@@ -1,32 +1,40 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { URL_PRODUCTS } from "../../utils/Endpoint";
 
 const AddProduct = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [fileList, setFileList] = useState([]);
+  const navigate = useNavigate();
 
-  const handleSubmit = (values) => {
-    if (!fileList.length) {
+  const handleSubmit = async (values) => {
+    if (!fileList.length || !fileList[0]?.originFileObj) {
       message.error("Thumbnail wajib diunggah");
       return;
     }
 
     setLoading(true);
 
-    setTimeout(() => {
-      const dummyResult = {
-        name: values.name,
-        price: Number(values.price),
-        filename: fileList[0].name,
-      };
-      console.log("Product created:", dummyResult);
+    const data = new FormData();
+    data.append("name", values.name);
+    data.append("price", values.price);
+    data.append("thumbnail", fileList[0].originFileObj);
+
+    try {
+      await axios.post(URL_PRODUCTS, data);
       message.success("Produk berhasil dibuat");
       form.resetFields();
       setFileList([]);
+      navigate("/dashboard/products");
+    } catch (error) {
+      message.error("Gagal membuat produk");
+    } finally {
       setLoading(false);
-    }, 800);
+    }
   };
 
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);

@@ -1,45 +1,81 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-
-const DUMMY_PRODUCT = {
-  _id: "1",
-  name: "Barbatos Lupus Rex 1/100 Model Kit",
-  price: 1500000,
-  thumbnail: "https://intinyafotodummy.jpg",
-};
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
+import { URL_PRODUCTS } from '../../utils/Endpoint';
 
 const UpdateProduct = () => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
-    const [fileList, setFileList] = useState(
-      DUMMY_PRODUCT.thumbnail
-        ? [
+  const [fileList, setFileList] = useState([]);
+  const navigate = useNavigate();
+  const params = useParams();
+  const { id } = params;
+
+  useEffect(() => {
+    if (!id) return;
+
+    setLoading(true);
+    axios
+      .get(`${URL_PRODUCTS}/${id}`)
+      .then((res) => {
+        const product = res.data;
+        form.setFieldsValue({
+          name: product?.name ?? "",
+          price: product?.price ?? "",
+        });
+
+        if (product?.thumbnail) {
+          setFileList([
             {
-              uid: "1",
-              name: "thumbnail.jpg",
-              status: "done",
-              url: DUMMY_PRODUCT.thumbnail,
+              uid: '-1',
+              name: 'thumbnail.jpg',
+              status: 'done',
+              url: product.thumbnail,
             },
-          ]
-        : []
-    );
+          ]);
+        } else {
+          setFileList([]);
+        }
+      })
+      .catch((err) => {
+        console.log(err?.response || err);
+        message.error('Gagal mengambil detail produk');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id, form]);
 
-    const handleSubmit = (values) => {
-        setLoading(true);
+  const handleSubmit = async (values) => {
+    if (!id) {
+      message.error('ID produk tidak ditemukan');
+      return;
+    }
 
-        setTimeout(() => {
-          const dummyResult = {
-            id: DUMMY_PRODUCT._id,
-            name: values.name,
-            price: Number(values.price),
-            filename: fileList.length > 0 && fileList[0].originFileObj ? fileList[0].name : 'existing_thumbnail.jpg',
-          };
-          console.log("Product updated:", dummyResult);
-          message.success("Produk berhasil diupdate");
-          setLoading(false);
-        }, 800);
-    };
+    setLoading(true);
+    const data = new FormData();
+    data.append('name', values.name);
+    data.append('price', values.price);
+
+    if (fileList.length > 0 && fileList[0]?.originFileObj) {
+      data.append('thumbnail', fileList[0].originFileObj);
+    }
+
+    try {
+      await axios.patch(`${URL_PRODUCTS}/${id}`, data);
+      message.success('Produk berhasil diupdate');
+      form.resetFields();
+      setFileList([]);
+      navigate('/dashboard/products');
+    } catch (error) {
+      console.log(error?.response || error);
+      message.error('Gagal update produk');
+    } finally {
+      setLoading(false);
+    }
+  };
 
     const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
 
@@ -56,10 +92,6 @@ const UpdateProduct = () => {
                 layout='vertical'
                 onFinish={handleSubmit}
                 size="middle"
-                initialValues={{
-                  name: DUMMY_PRODUCT.name,
-                  price: DUMMY_PRODUCT.price,
-                }}
             >
                 <Form.Item
                     name='name'

@@ -8,6 +8,7 @@ import Product from "./pages/dashboard/Product";
 import AddProduct from "./pages/dashboard/ProductCreate";
 import UpdateProduct from "./pages/dashboard/ProductUpdate2";
 import DashboardLayout from "./layouts/DashboardLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 
@@ -18,20 +19,21 @@ function App() {
         {/* Route Public */}
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/checkout' element={<Checkout />} />
+        <Route path='/checkout/:id' element={<Checkout />} />
 
-        {/* Route Dashboard (sidebar only here) */}
-        <Route path='/dashboard' element={<DashboardLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path='products' element={<Product />} />
-          <Route path='addproduct' element={<AddProduct />} />
-          <Route path='updateproduct' element={<UpdateProduct />} />
+        {/* Route Dashboard */}
+        <Route element={<ProtectedRoute />}> 
+          <Route path='/dashboard' element={<DashboardLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path='products' element={<Product />} />
+            <Route path='addproduct' element={<AddProduct />} />
+            <Route path='updateproduct/:id' element={<UpdateProduct />} />
+          </Route>
         </Route>
       </Routes>
     </Router>
   );
 }
-
 
 export default App;
 

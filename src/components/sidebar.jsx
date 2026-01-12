@@ -5,12 +5,15 @@ import {
     SettingOutlined,
     LogoutOutlined,
 } from '@ant-design/icons';
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+const AUTH_STORAGE_KEY = "auth";
 
 const { Sider } = Layout;
 
 const Sidebar = ({ collapsed, onCollapse }) => {
     const location = useLocation();
+    const navigate = useNavigate();
 
     const selectedKey = useMemo(() => {
         const path = location.pathname;
@@ -19,6 +22,11 @@ const Sidebar = ({ collapsed, onCollapse }) => {
         if (path.startsWith("/dashboard")) return "dashboard";
         return "dashboard";
     }, [location.pathname]);
+
+    const handleLogout = () => {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+        navigate("/", { replace: true });
+    };
 
     return (
         <Sider
@@ -41,8 +49,8 @@ const Sidebar = ({ collapsed, onCollapse }) => {
                 <Menu.Item key="addproduct" icon={<SettingOutlined />}>
                     <Link to="/dashboard/addproduct">Add Product</Link>
                 </Menu.Item>
-                <Menu.Item key="logout" icon={<LogoutOutlined />}>
-                    <Link to="/">Logout</Link>
+                <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>
+                    Logout
                 </Menu.Item>
             </Menu>
         </Sider>

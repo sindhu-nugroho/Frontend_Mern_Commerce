@@ -3,7 +3,9 @@ import { Input, Button, Form, Alert } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { URL_SIGNIN } from '../utils/Endpoint';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+const AUTH_STORAGE_KEY = 'auth';
 
 function Login() {
     const [form] = Form.useForm();
@@ -11,6 +13,8 @@ function Login() {
     const [errMsg, setErrMsg] = useState('');
 
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '/dashboard';
 
     const handleSubmit = (values) => {
         setErrMsg('');
@@ -27,7 +31,17 @@ function Login() {
                 if (role !== 'Admin') {
                     setErrMsg('Hanya admin yang dapat mengakses halaman ini');
                 } else {
-                    navigate('/dashboard');
+                    const authPayload = {
+                        token: res?.data?.token,
+                        role: res?.data?.role,
+                        user: {
+                            _id: res?.data?._id,
+                            name: res?.data?.name,
+                            email: res?.data?.email,
+                        },
+                    };
+                    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authPayload));
+                    navigate(from, { replace: true });
                 }
             })
             .catch((err) => {
